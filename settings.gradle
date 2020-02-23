@@ -1,0 +1,2 @@
+include ':app', ':falldetector'
+rootProject.name='Fall Detector Demo'
