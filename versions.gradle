@@ -1,0 +1,32 @@
+def versions = [:]
+
+// lib
+versions.lib_version_code = 1
+versions.lib_version_name = "0.0.1"
+
+// demo app
+versions.app_version_code = 1
+versions.app_version_name = "0.0.1"
+
+// Gradle and Kotlin
+versions.kotlin = "1.3.61"
+versions.gradle_android = "3.5.3"
+
+// Android
+versions.android_min_sdk = 14
+versions.android_target_sdk = 29
+versions.android_compile_sdk = 29
+versions.android_build_tools = "29.0.1"
+
+// AndroidX
+versions.androidx = "1.1.0"
+versions.ktx = "1.2.0"
+versions.constraint_layout = "1.1.3"
+
+//Testing
+versions.junit = "4.12"
+versions.runner = "1.2.0"
+versions.espresso = "3.2.0"
+
+
+ext.versions = versions
