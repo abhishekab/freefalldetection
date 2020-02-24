@@ -29,6 +29,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.androidx"
     implementation "androidx.core:core-ktx:$versions.ktx"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
+    implementation project(":falldetector")
 
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test:runner:$versions.runner"

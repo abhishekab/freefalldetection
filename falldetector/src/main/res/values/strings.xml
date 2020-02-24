@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Fall Detector</string>
+    <string name="channel_foreground_service_name">Fall Detector Service Status</string>
+    <string name="channel_foreground_service_desc">Displays if the Fall Detection Service is Running
+      </string>
+    <string name="channel_fall_detected_name">Fall Detected Notification</string>
+    <string name="channel_fall_detected_desc">Displays if the Fall Detection Service is Running
+    </string>
+    <string name="default_notification_fall_detected_title">OOPS! Fall Detected</string>
+    <string name="default_notification_fall_detected_body">Hope your phone didn\'t break :)
+    </string>
+    <string name="default_notification_fall_detection_running_title">Fall Detection Service Running
+    </string>
+    <string name="default_notification_fall_detection_running_body">Will detect and record your phone falling</string>
+
 </resources>
