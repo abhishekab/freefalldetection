@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ab.falldetector.custom.NoAccelerometerException
 import com.ab.falldetector.custom.NotInitializedException
 import com.ab.falldetector.db.AppDatabase
@@ -17,7 +18,7 @@ import com.ab.falldetector.service.FreeFallDetectorService
 object FreeFallDetector {
     private var context: Context? = null
     private var fallRepository: FallRepository? = null
-
+    private var isRunning = MutableLiveData<Boolean>().apply { value = false }
     @Throws(NoAccelerometerException::class)
     fun init(
         context: Context
@@ -62,6 +63,12 @@ object FreeFallDetector {
     fun allFalls(): LiveData<List<Fall>> {
         if (fallRepository == null) throw NotInitializedException()
         return fallRepository!!.allFalls
+    }
+
+    fun getIsFallDetectionRunning(): LiveData<Boolean> = isRunning
+
+    internal fun setIsFallDetectionRunning(isRunning: Boolean){
+        this.isRunning .postValue(isRunning)
     }
 
 

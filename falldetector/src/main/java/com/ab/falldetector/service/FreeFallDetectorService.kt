@@ -15,6 +15,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.ab.falldetector.FreeFallDetector
 import com.ab.falldetector.R
 import com.ab.falldetector.custom.NoAccelerometerException
 import com.ab.falldetector.db.AppDatabase
@@ -32,7 +33,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
         const val FOREGROUND_ID = 100001
         const val CHANNEL_FALL_DETECTOR_RUNNING = "channel_fall_detector_running"
         const val CHANNEL_FALL_DETECTED = "channel_fall_detected"
-        const val DEFAULT_FREE_FALL_THRESHOLD = 0.7
+        const val DEFAULT_FREE_FALL_THRESHOLD = 2.0
         const val DEFAULT_SENSOR_DELAY = SensorManager.SENSOR_DELAY_UI
         const val EXTRA_KEY_THRESHOLD = "FreeFallDetectorService.EXTRA_KEY_THRESHOLD"
         const val EXTRA_KEY_SENSOR_DELAY = "FreeFallDetectorService.EXTRA_KEY_SENSOR_DELAY"
@@ -93,6 +94,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
             // Unregister old listener if any
             unregisterListener()
             sensorManager.registerListener(this, it, sensorDelay)
+            FreeFallDetector.setIsFallDetectionRunning(true)
             val notification: Notification = NotificationCompat.Builder(
                 this,
                 CHANNEL_FALL_DETECTOR_RUNNING
@@ -128,21 +130,22 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
 
             // The variable isInFall is used to track the period while the phone is encountering
             // free fall. isInFall is set to true when the magnitude falls below the threshold
-            // and is set to fals when the magnitude exceeds the threshhold. This is done to
+            // and is set to false when the magnitude exceeds the threshold. This is done to
             // ensure that multiple events during the same fall can be clubbed together
             if (magnitude <= threshold && !isInFall) {
                 fallStartTime = Utils.getNow()
-                Log.d(TAG, "Fall Detected")
                 isInFall = true
+                Log.d(TAG, "Fall Detected")
             } else if (magnitude > threshold && isInFall) {
+                val lastFallStartTime = fallStartTime
+                val fallEndTime = Utils.getNow()
                 isInFall = false
                 Log.d(TAG, "Fall ended")
-                val fallEndTime = Utils.getNow()
                 showFallEndedNotification()
                 GlobalScope.launch {
                     fallRepository.insert(
                         Fall(
-                            fallStartTime = fallStartTime, fallEndTime = fallEndTime,
+                            fallStartTime = lastFallStartTime, fallEndTime = fallEndTime,
                             threshold = threshold
                         )
                     )
@@ -170,6 +173,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
         accelerometerSensor?.let {
             sensorManager.unregisterListener(this, it)
         }
+        FreeFallDetector.setIsFallDetectionRunning(false)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

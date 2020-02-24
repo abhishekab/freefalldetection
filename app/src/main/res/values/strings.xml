@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Fall Detector Demo</string>
+    <string name="error_no_accelerometer">No Accelerometer, App will exit</string>
+    <string name="btn_start_fall_detection">Start Fall Detection</string>
+    <string name="btn_stop_fall_detection">Stop Fall Detection</string>
+    <string name="item_fall_heading">%d milliseconds Fall</string>
+    <string name="item_fall_timestamp">at %tc</string>
+    <string name="label_fall_history">Fall History</string>
+    <string name="empty_view_no_history">No History</string>
 </resources>
