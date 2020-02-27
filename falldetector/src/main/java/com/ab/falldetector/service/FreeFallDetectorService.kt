@@ -22,13 +22,13 @@ import com.ab.falldetector.db.AppDatabase
 import com.ab.falldetector.model.Fall
 import com.ab.falldetector.repo.FallRepository
 import com.ab.falldetector.util.Utils
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 
-internal class FreeFallDetectorService : Service(), SensorEventListener {
+internal class FreeFallDetectorService : Service(), SensorEventListener,
+    CoroutineScope by MainScope() {
     companion object {
         const val FOREGROUND_ID = 100001
         const val CHANNEL_FALL_DETECTOR_RUNNING = "channel_fall_detector_running"
@@ -113,6 +113,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
         unregisterListener()
         stopForeground(true)
         Log.d(TAG, "Destroyed Service")
+        cancel()
         super.onDestroy()
     }
 
@@ -142,7 +143,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
                 isInFall = false
                 Log.d(TAG, "Fall ended")
                 showFallEndedNotification()
-                GlobalScope.launch {
+                launch {
                     fallRepository.insert(
                         Fall(
                             fallStartTime = lastFallStartTime, fallEndTime = fallEndTime,
@@ -155,6 +156,7 @@ internal class FreeFallDetectorService : Service(), SensorEventListener {
     }
 
     private fun showFallEndedNotification() {
+        // TODO: Add a pending content intent to the calling activity
         val notification: Notification = NotificationCompat.Builder(
             this,
             CHANNEL_FALL_DETECTED
